@@ -2,6 +2,7 @@
 
 class Character {
   constructor(name, type) {
+    const types = ['Bowman', 'Swordsman', 'Magician', 'Daemon', 'Undead', 'Zombie']
     if (typeof name !== 'string' || typeof type !== 'string') {
       throw new Error('Name and type should be strings');
     }
@@ -9,7 +10,7 @@ class Character {
       throw new Error('Name length should be between 2 and 10 characters');
     }
    
-    if (type !== 'Character') {
+    if (!types.includes(type)) {
       throw new Error('Invalid type');
     }
     
@@ -21,14 +22,17 @@ class Character {
 
 
   damage(points) {
-    this.health -= points;
-    if (this.health < 0) {
-      this.health = 0;
-    }
+    this.health -= Math.min(points * (1 - this.defence / 100), this.health);
   }
 
   levelUp() {
+    if (this.health === 0) {
+      throw new Error("Нельзя повысить level умершего!")
+  }
     this.level += 1;
+    this.attack = this.attack * 1.2;
+    this.defence = this.defence * 1.2;
+    this.health = 100;
   }
 };
 
